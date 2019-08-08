@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:outputStylesheet name="css/style.css"/>
+    <h:head>		
+        <title>Details</title>		
+    </h:head>
+    <h:body>
+        <header>		
+            <h1>#{detailController.product.title}</h1>	
+        </header>
+       	
+        <ul>		
+            <li>id:	#{detailController.product.productId}</li>		
+            <li>Label:	#{detailController.product.label}</li>	
+            <li>Price:	#{detailController.product.price}</li>	
+        </ul>	
+        <!-- Link	back	to	the	index	page	-->		
+        <p><h:link value="Return to HomePage"	outcome="shopHomepage"/>	</p>		
+    </h:body>
+</html>
+
