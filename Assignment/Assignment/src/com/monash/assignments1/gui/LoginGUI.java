@@ -143,7 +143,6 @@ public class LoginGUI extends JFrame {
         shopButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    
                     new EShop("");
                     loginFrame.dispose();
                 } catch (Exception ex) {

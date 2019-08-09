@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -57,6 +58,7 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
     private JLabel titleLabel;
     private JLabel labelLabel;
     private JLabel priceLabel;
+   
 
     private JButton searchButton;
     private JButton buyButton;
@@ -72,9 +74,12 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
     private JTextField showLabelField;
     //private JTextField showDetailField;
     private JTextField showPriceField;
-
+    
+    
+    private JTextArea showDetailFiledArea;
     private JTable listTable;
     //
+    private final JPanel infoPanal;
 
     public EShop(String username) {
         
@@ -97,7 +102,7 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
 
         //my
         searchLabelComboBox = new JComboBox();
-        searchLabelComboBox.addItem("");
+        searchLabelComboBox.addItem("Tasteless");
         searchLabelComboBox.addItem("Sweet");
         searchLabelComboBox.addItem("Salty");
         searchLabelComboBox.addItem("Soul");
@@ -111,7 +116,7 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
 
         searchMaxField = new JTextField();
         searchMaxField.setText("Max");
-
+        
         showIdField = new JTextField();
 
         showTitleField = new JTextField();
@@ -120,7 +125,12 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
 
         //showDetailField  = new JTextField();
         showPriceField = new JTextField();
-
+        
+        showDetailFiledArea = new JTextArea();
+        showDetailFiledArea.setColumns(20);
+        showDetailFiledArea.setRows(4);
+       
+        
         //my
         this.listTable = new JTable(new DefaultTableModel(TABLE_COLUMNS, 0));
 
@@ -138,12 +148,18 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
 
         //this.buttonPanel = new JPanel();
         this.detailPanel = new JPanel();
+        
+        this.infoPanal = new JPanel();
 
         // set layout manager
         container.setLayout(new BorderLayout());
         this.inputPanel.setLayout(new GridLayout(1, 5));
         //this.buttonPanel.setLayout(new GridLayout(1,4));
-        this.detailPanel.setLayout(new GridLayout(2, 5));
+        //this.detailPanel.setLayout(new GridLayout(2, 5));
+        this.infoPanal.setLayout(new GridLayout(2, 5));
+        detailPanel.setLayout(new BorderLayout());
+        detailPanel.add(infoPanal,BorderLayout.NORTH );
+        detailPanel.add(showDetailFiledArea, BorderLayout.SOUTH);
 
         searchButton.addActionListener(this);
         backButton.addActionListener(this);
@@ -156,19 +172,33 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
         inputPanel.add(searchButton);
         inputPanel.add(backButton);
 
-        detailPanel.add(idLabel);
-        detailPanel.add(showIdField);
-        detailPanel.add(titleLabel);
-        detailPanel.add(showTitleField);
-        detailPanel.add(labelLabel);
-        detailPanel.add(showLabelField);
-        detailPanel.add(priceLabel);
-        detailPanel.add(showPriceField);
+//        detailPanel.add(idLabel);
+//        detailPanel.add(showIdField);
+//        detailPanel.add(titleLabel);
+//        detailPanel.add(showTitleField);
+//        detailPanel.add(labelLabel);
+//        detailPanel.add(showLabelField);
+//        detailPanel.add(priceLabel);
+//        detailPanel.add(showPriceField);
+        
+        infoPanal.add(idLabel);
+        infoPanal.add(showIdField);
+        infoPanal.add(titleLabel);
+        infoPanal.add(showTitleField);
+        infoPanal.add(labelLabel);
+        infoPanal.add(showLabelField);
+        infoPanal.add(priceLabel);
+        infoPanal.add(showPriceField);
+        
 
+        detailPanel.add(infoPanal,BorderLayout.NORTH );
+        detailPanel.add(showDetailFiledArea, BorderLayout.SOUTH);
         // add panels to content pane
         container.add(inputPanel, BorderLayout.NORTH);
         container.add(new JScrollPane(this.listTable), BorderLayout.CENTER);
         container.add(detailPanel, BorderLayout.SOUTH);
+       
+        
 
         // change the default behaviour of the close button
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -237,6 +267,7 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
         this.showTitleField.setText(p.getTitle() + "");
         this.showLabelField.setText(p.getLabel() + "");
         this.showPriceField.setText(p.getPrice() + "");
+        this.showDetailFiledArea.setText(p.getDetail());
     }
 
     public void search() {

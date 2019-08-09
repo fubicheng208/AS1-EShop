@@ -15,6 +15,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
+
+
 /**
  *
  * @author Lin
@@ -49,6 +51,19 @@ public class ProductsServices implements Serializable {
     @Basic(optional = false)
     @Column(name = "PRICE")
     private double price;
+    
+    @Basic(optional = false)
+    @Column(name = "DETAIL")
+    private String detail;
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
 
     public ProductsServices() {
     }
@@ -70,6 +85,14 @@ public class ProductsServices implements Serializable {
         this.title = title;
         this.label = label;
         this.price = price;
+    }
+    
+    public ProductsServices(Integer productId, String title, String label, double price, String detail) {
+        this.productId = productId;
+        this.title = title;
+        this.label = label;
+        this.price = price;
+        this.detail = detail;
     }
 
     public Integer getProductId() {
