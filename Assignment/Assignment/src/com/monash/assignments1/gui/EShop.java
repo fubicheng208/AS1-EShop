@@ -5,13 +5,19 @@
  */
 package com.monash.assignments1.gui;
 
+import com.monash.assignment.repository.OrderJpaController;
 import com.monash.assignment.repository.ProductsServicesJpaController;
+import com.monash.assignment.repository.UserJpaController;
+import com.monash.assignment1.repository.entities.Order;
 import com.monash.assignment1.repository.entities.ProductsServices;
+import com.monash.assignment1.repository.entities.User;
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.sound.midi.SysexMessage;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -47,10 +54,11 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
 
     EntityManagerFactory emf;
     ProductsServicesJpaController productController;
+    OrderJpaController orderController;
+    UserJpaController userController;
 
     private JPanel inputPanel;
-    private JPanel buttonPanel;
-
+    private JPanel decisionPanel;
     private JPanel detailPanel;
 
     //
@@ -63,6 +71,7 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
     private JButton searchButton;
     private JButton buyButton;
     private JButton backButton;
+    
 
     private JComboBox searchLabelComboBox;
     //private JTextField searchIdField;
@@ -74,22 +83,28 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
     private JTextField showLabelField;
     //private JTextField showDetailField;
     private JTextField showPriceField;
+    private JTextField quantityField;
     
     
     private JTextArea showDetailFiledArea;
     private JTable listTable;
     //
     private final JPanel infoPanal;
+    private final JLabel quantityLabel;
 
     public EShop(String username) {
         
         this.username = username;
         emf = Persistence.createEntityManagerFactory("AssignmentPU");
         productController = new ProductsServicesJpaController(emf);
+        orderController = new OrderJpaController(emf);
+        userController = new UserJpaController(emf);
 
         this.searchButton = new JButton("Search");
-        this.buyButton = new JButton("Buy");
+        this.buyButton = new JButton("   Buy It Now   ");
         this.backButton = new JButton("Back");
+        
+        
 
         // create container
         Container container = this.getContentPane();
@@ -99,6 +114,7 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
         this.titleLabel = new JLabel("Title");
         this.labelLabel = new JLabel("Label");
         this.priceLabel = new JLabel("Price");
+        this.quantityLabel = new JLabel("Quantity");
 
         //my
         searchLabelComboBox = new JComboBox();
@@ -126,6 +142,8 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
         //showDetailField  = new JTextField();
         showPriceField = new JTextField();
         
+        quantityField = new JTextField();
+        
         showDetailFiledArea = new JTextArea();
         showDetailFiledArea.setColumns(20);
         showDetailFiledArea.setRows(4);
@@ -150,20 +168,21 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
         this.detailPanel = new JPanel();
         
         this.infoPanal = new JPanel();
+        
+        this.decisionPanel = new JPanel();
 
         // set layout manager
         container.setLayout(new BorderLayout());
         this.inputPanel.setLayout(new GridLayout(1, 5));
-        //this.buttonPanel.setLayout(new GridLayout(1,4));
-        //this.detailPanel.setLayout(new GridLayout(2, 5));
         this.infoPanal.setLayout(new GridLayout(2, 5));
-        detailPanel.setLayout(new BorderLayout());
-        detailPanel.add(infoPanal,BorderLayout.NORTH );
-        detailPanel.add(showDetailFiledArea, BorderLayout.SOUTH);
+        this.detailPanel.setLayout(new BorderLayout());
+        this.decisionPanel.setLayout(new GridLayout(1,3));
+        
+        
 
         searchButton.addActionListener(this);
         backButton.addActionListener(this);
-        //buyButton.addActionListener(this);
+        buyButton.addActionListener(this);
 
         //inputPanel.add(searchIdField);
         inputPanel.add(searchLabelComboBox);
@@ -171,15 +190,6 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
         inputPanel.add(searchMaxField);
         inputPanel.add(searchButton);
         inputPanel.add(backButton);
-
-//        detailPanel.add(idLabel);
-//        detailPanel.add(showIdField);
-//        detailPanel.add(titleLabel);
-//        detailPanel.add(showTitleField);
-//        detailPanel.add(labelLabel);
-//        detailPanel.add(showLabelField);
-//        detailPanel.add(priceLabel);
-//        detailPanel.add(showPriceField);
         
         infoPanal.add(idLabel);
         infoPanal.add(showIdField);
@@ -190,9 +200,14 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
         infoPanal.add(priceLabel);
         infoPanal.add(showPriceField);
         
-
+        decisionPanel.add(quantityLabel);
+        decisionPanel.add(quantityField);
+        decisionPanel.add(buyButton);
+        
         detailPanel.add(infoPanal,BorderLayout.NORTH );
         detailPanel.add(showDetailFiledArea, BorderLayout.SOUTH);
+        detailPanel.add(decisionPanel, BorderLayout.SOUTH);
+        
         // add panels to content pane
         container.add(inputPanel, BorderLayout.NORTH);
         container.add(new JScrollPane(this.listTable), BorderLayout.CENTER);
@@ -203,7 +218,7 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
         // change the default behaviour of the close button
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        this.setSize(750, 570);
+        this.setSize(750, 650);
         this.setVisible(true);
         List<ProductsServices> res = productController.findAll();
         displayProducts(res);
@@ -231,6 +246,12 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
                     Logger.getLogger(UserGUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+        }else if(e.getSource() == buyButton){
+            if(placeOrder()){
+                displayMessageInDialog("You have bought it successfully");
+            }else{
+                displayMessageInDialog("Failed");
+            }
         }
     }
 
@@ -241,7 +262,6 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
             try {
                 if (this.isProductSelected()) {
                     int productId = this.getSelectedProductId();
-
                     ProductsServices p = productController.findProductsServices(productId);
                     displayProductDetails(p);
                 }
@@ -249,6 +269,26 @@ public class EShop extends JFrame implements ActionListener, ListSelectionListen
                 displayMessageInDialog(ex.getMessage());
             }
         }
+    }
+    
+    public boolean placeOrder() {
+        boolean res = false;
+        if(username.equals("")){
+            displayMessageInDialog("You haven't logged in");
+            return res;
+        }else{
+            try{
+                int productId = this.getSelectedProductId();
+                ProductsServices product = productController.findProductsServices(productId);
+                User user = userController.findByEmail(username);
+                Order order = new Order(new Date(), Integer.parseInt(quantityField.getText()), user, product);
+                orderController.create(order);
+                res = true;
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        return res;
     }
 
     public boolean isProductSelected() {

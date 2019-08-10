@@ -85,7 +85,7 @@ public class UserGUI extends JFrame{
         
         JButton eidtButton = new JButton("Edit");
         eidtButton.setBackground(new Color(255, 255, 255));
-        eidtButton.setBounds(125, 221, 100, 23);
+        eidtButton.setBounds(70, 221, 80, 23);
         userFrame.getContentPane().add(eidtButton);
         eidtButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -126,6 +126,21 @@ public class UserGUI extends JFrame{
         });
         
         JButton shopButton = new JButton("Shop");
+        shopButton.setBackground(new Color(255, 255, 255));
+        shopButton.setBounds(460, 221, 80, 23);
+        userFrame.getContentPane().add(shopButton);
+        shopButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    new EShop(email_address);
+                    userFrame.dispose();
+                } catch (Exception ex) {
+                    Logger.getLogger(UserGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        
+        JButton ordersButton = new JButton("Orders");
         shopButton.setBackground(new Color(255, 255, 255));
         shopButton.setBounds(460, 221, 80, 23);
         userFrame.getContentPane().add(shopButton);

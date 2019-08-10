@@ -55,6 +55,14 @@ public class ProductsServices implements Serializable {
     @Basic(optional = false)
     @Column(name = "DETAIL")
     private String detail;
+    
+    @Basic(optional = false)
+    @Column(name = "HASSALED")
+    private int hasSaled;
+    
+    @Basic(optional = false)
+    @Column(name = "AVERAGEMARK")
+    private double averageMark;
 
     public String getDetail() {
         return detail;

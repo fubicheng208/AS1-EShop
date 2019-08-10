@@ -4,6 +4,7 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>com.monash.assignment1.repository.entities.ProductsServices</class>
     <class>com.monash.assignment1.repository.entities.User</class>
+    <class>com.monash.assignment1.repository.entities.Order</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/Assignment"/>
       <property name="javax.persistence.jdbc.user" value="fit5192"/>
